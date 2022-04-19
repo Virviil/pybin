@@ -22,7 +22,7 @@ jobs:
         run: curl.exe --output installer.exe --url https://www.python.org/ftp/python/${{needs.prepare.outputs.VERSION}}/python-${{needs.prepare.outputs.VERSION}}-amd64.exe
       - name: Run installation in silent mode @ -Docs -Debug -Launcher
         shell: pwsh
-        run: ./installer.exe /quiet InstallAllUsers=1 PrependPath=1 Include_doc=0 include_launcher=0
+        run: ./installer.exe /passive InstallAllUsers=1 PrependPath=1 Include_doc=0 include_launcher=0
       - name: Find Python installation
         shell: pwsh
         run: |
