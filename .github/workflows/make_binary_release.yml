@@ -26,9 +26,10 @@ jobs:
         run: |
           Set-Location -Path "C:\hostedtoolcache\windows\Python\3.9.12"
           Get-ChildItem -Force
-      # - name: Compress venv
-      #   shell: pwsh
-      #   run: Compress-Archive -Path .venv/* -DestinationPath python.zip
+      - name: Compress venv
+        shell: pwsh
+        run: |
+          Compress-Archive -Path C:\hostedtoolcache\windows\Python\3.9.12\* -DestinationPath python.zip
       - name: Release
         uses: softprops/action-gh-release@v1
         if: startsWith(github.ref, 'refs/tags/')
