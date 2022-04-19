@@ -18,6 +18,9 @@ jobs:
       - name: Check PowerShell
         shell: pwsh
         run: curl.exe --output index.html --url https://superuser.com
+      - name: Show downloaded
+        shell: pwsh
+        run: type index.html
       # - name: Show
       #   run: echo ${{ steps.get_version.outputs.VERSION }} > Release.txt
       # - name: Release
