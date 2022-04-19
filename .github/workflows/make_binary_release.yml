@@ -6,22 +6,19 @@ name: Make a release
 on: [push]
 
 jobs:
-  prepare:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Get the version
-        id: get_version
-        run: echo ::set-output name=VERSION::$(echo $GITHUB_REF | cut -d / -f 3)
+  # prepare:
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Get the version
+  #       id: get_version
+  #       run: echo ::set-output name=VERSION::$(echo $GITHUB_REF | cut -d / -f 3)
   windows_build:
     runs-on: windows-latest
     steps:
-      - name: Check PowerShell
+      - name: Download Python installer
         shell: pwsh
         run: curl.exe --output installer.exe --url https://www.python.org/ftp/python/3.10.4/python-3.10.4-amd64.exe
-      - name: Check download
-        shell: pwsh
-        run: Get-ChildItem -Force
-      - name: Run installation in silent mode
+      - name: Run installation in silent mode @ -Docs -Debug -Launcher
         shell: pwsh
         run: ./installer.exe /quiet InstallAllUsers=1 PrependPath=1 Include_doc=0 include_launcher=0
       - name: Find Python installation
