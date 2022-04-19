@@ -26,7 +26,9 @@ jobs:
         run: ./installer.exe /quiet InstallAllUsers=1 PrependPath=1 Include_doc=0 include_launcher=0
       - name: Find Python installation
         shell: pwsh
-        run: Get-Command python3
+        run: |
+          Change-Location C:\hostedtoolcache\windows\Python\3.9.12 
+          Get-ChildItem -Force
       # - name: Compress venv
       #   shell: pwsh
       #   run: Compress-Archive -Path .venv/* -DestinationPath python.zip
