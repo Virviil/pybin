@@ -24,12 +24,12 @@ jobs:
       - name: Run installation in silent mode
         shell: pwsh
         run: ./installer.exe /quiet InstallAllUsers=1 PrependPath=1 Include_doc=0 include_launcher=0
-      - name: Create venv
+      - name: Find Python installation
         shell: pwsh
-        run: python3 -mvenv --copies .venv 
-      - name: Compress venv
-        shell: pwsh
-        run: Compress-Archive -Path .venv/* -DestinationPath python.zip
+        run: Get-Command python3
+      # - name: Compress venv
+      #   shell: pwsh
+      #   run: Compress-Archive -Path .venv/* -DestinationPath python.zip
       - name: Release
         uses: softprops/action-gh-release@v1
         if: startsWith(github.ref, 'refs/tags/')
