@@ -26,6 +26,10 @@ jobs:
       - name: Find Python installation
         shell: pwsh
         run: |
+          Get-Command python3
+      - name: List Python installation
+        shell: pwsh
+        run: |
           Set-Location -Path "C:\hostedtoolcache\windows\Python\${{needs.prepare.outputs.VERSION}}"
           Get-ChildItem -Force
       - name: Compress venv
