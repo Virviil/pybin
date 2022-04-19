@@ -1,19 +1,27 @@
 name: Make a release
-on:
-  push:
-    tags:
-      - "*.*.*"
+# on:
+#   push:
+#     tags:
+#       - "*.*.*"
+on: [push]
+
 jobs:
-  buiild:
+  prepare:
     runs-on: ubuntu-latest
     steps:
       - name: Get the version
         id: get_version
         run: echo ::set-output name=VERSION::$(echo $GITHUB_REF | cut -d / -f 3)
-      - name: Build
-        run: echo ${{ steps.get_version.outputs.VERSION }} > Release.txt
-      - name: Release
-        uses: softprops/action-gh-release@v1
-        if: startsWith(github.ref, 'refs/tags/')
-        with:
-          files: Release.txt
+  windows_build:
+    runs-on: windows-latest
+    steps:
+      - name: Check PowerShell
+        shell: pwsh
+        run: curl.exe --output index.html --url https://superuser.com
+      # - name: Show
+      #   run: echo ${{ steps.get_version.outputs.VERSION }} > Release.txt
+      # - name: Release
+      #   uses: softprops/action-gh-release@v1
+      #   if: startsWith(github.ref, 'refs/tags/')
+      #   with:
+      #     files: Release.txt
