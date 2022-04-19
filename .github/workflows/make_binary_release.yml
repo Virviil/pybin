@@ -27,7 +27,7 @@ jobs:
       - name: Find Python installation
         shell: pwsh
         run: |
-          Change-Location C:\hostedtoolcache\windows\Python\3.9.12 
+          Set-Location -Path "C:\hostedtoolcache\windows\Python\3.9.12"
           Get-ChildItem -Force
       # - name: Compress venv
       #   shell: pwsh
