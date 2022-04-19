@@ -17,14 +17,16 @@ jobs:
     steps:
       - name: Check PowerShell
         shell: pwsh
-        run: curl.exe --output index.html --url https://superuser.com
-      - name: Show downloaded
+        run: curl.exe --output installer.exe --url https://www.python.org/ftp/python/3.10.4/python-3.10.4-amd64.exe
+      - name: Run installation in silent mode
         shell: pwsh
-        run: type index.html
-      # - name: Show
-      #   run: echo ${{ steps.get_version.outputs.VERSION }} > Release.txt
-      # - name: Release
-      #   uses: softprops/action-gh-release@v1
-      #   if: startsWith(github.ref, 'refs/tags/')
-      #   with:
-      #     files: Release.txt
+        run: installer.exe /quiet InstallAllUsers=1 PrependPath=1 Include_doc=0 include_launcher=0
+      - name: Create venv
+        shell: pwsh
+        run: python3 -mvenv .venv
+      - name: Compress-Archive -Path .venv -DestinationPath python.zip
+      - name: Release
+        uses: softprops/action-gh-release@v1
+        if: startsWith(github.ref, 'refs/tags/')
+        with:
+          files: python.zip
