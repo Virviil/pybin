@@ -1,37 +1,42 @@
 name: Make a release
-# on:
-#   push:
-#     tags:
-#       - "*.*.*"
-on: [push]
+on:
+  push:
+    tags:
+      - "*.*.*"
 
 jobs:
-  # prepare:
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - name: Get the version
-  #       id: get_version
-  #       run: echo ::set-output name=VERSION::$(echo $GITHUB_REF | cut -d / -f 3)
+  prepare:
+    runs-on: ubuntu-latest
+    outputs:
+      VERSION: ${{steps.get_version.outputs.VERSION}}
+    steps:
+      - name: Get the version
+        id: get_version
+        run: echo ::set-output name=VERSION::$(echo $GITHUB_REF | cut -d / -f 3)
   windows_build:
+    needs: prepare
     runs-on: windows-latest
     steps:
       - name: Download Python installer
         shell: pwsh
-        run: curl.exe --output installer.exe --url https://www.python.org/ftp/python/3.10.4/python-3.10.4-amd64.exe
+        run: curl.exe --output installer.exe --url https://www.python.org/ftp/python/${{needs.prepare.outputs.VERSION}}/python-${{needs.prepare.outputs.VERSION}}-amd64.exe
       - name: Run installation in silent mode @ -Docs -Debug -Launcher
         shell: pwsh
         run: ./installer.exe /quiet InstallAllUsers=1 PrependPath=1 Include_doc=0 include_launcher=0
       - name: Find Python installation
         shell: pwsh
         run: |
-          Set-Location -Path "C:\hostedtoolcache\windows\Python\3.9.12"
+          Set-Location -Path "C:\hostedtoolcache\windows\Python\${{needs.prepare.outputs.VERSION}}"
           Get-ChildItem -Force
       - name: Compress venv
         shell: pwsh
         run: |
-          Compress-Archive -Path C:\hostedtoolcache\windows\Python\3.9.12 -DestinationPath python.zip -CompressionLevel Fastest
+          Compress-Archive -Path C:\hostedtoolcache\windows\Python\${{needs.prepare.outputs.VERSION}}\x64\* -DestinationPath win-x64.zip
+          Compress-Archive -Path C:\hostedtoolcache\windows\Python\${{needs.prepare.outputs.VERSION}}\x86\* -DestinationPath win-x86.zip
       - name: Release
         uses: softprops/action-gh-release@v1
         if: startsWith(github.ref, 'refs/tags/')
         with:
-          files: python.zip
+          files: |
+            win-x64.zip
+            win-x86.zip
