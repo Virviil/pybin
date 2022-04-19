@@ -22,7 +22,7 @@ jobs:
         run: curl.exe --output installer.exe --url https://www.python.org/ftp/python/${{needs.prepare.outputs.VERSION}}/python-${{needs.prepare.outputs.VERSION}}-amd64.exe
       - name: Run installation in silent mode @ -Docs -Debug -Launcher
         shell: pwsh
-        run: Start-Process "installer.exe" -argumentlist "/quiet InstallAllUsers=1 PrependPath=1 Include_doc=0 include_launcher=0" -wait
+        run: Start-Process "installer.exe" -argumentlist "/quiet InstallAllUsers=1 PrependPath=1 Include_doc=0 include_launcher=0 TargetDir='C:\hostedtoolcache\windows\Python\3.7.0'" -wait
       - name: Find Python installation
         shell: pwsh
         run: |
