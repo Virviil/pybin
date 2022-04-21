@@ -17,36 +17,50 @@ jobs:
     needs: prepare
     runs-on: windows-latest
     steps:
-      - name: Download Python installer
-        shell: pwsh
-        run: curl.exe --output installer.exe --url https://www.python.org/ftp/python/${{needs.prepare.outputs.VERSION}}/python-${{needs.prepare.outputs.VERSION}}-amd64.exe
-      - name: Run installation in silent mode @ -Docs -Debug -Launcher
-        shell: pwsh
-        run: Start-Process "installer.exe" -argumentlist "/quiet InstallAllUsers=1 PrependPath=0 Include_doc=0 include_launcher=0 TargetDir='C:\Temp\Python\3.7.0'" -Verb RunAs -Wait
-      - name: Try to find logs
-        shell: pwsh
-        run: |
-          Set-Location -Path "C:\Temp"
-          Get-ChildItem -Force
-      - name: Find Python installation
-        shell: pwsh
-        run: |
-          Get-Command python3
-          dir env:
+      - name: Download python
+        uses: actions/setup-python@3
+        with:
+          python-version: ${{needs.prepare.outputs.VERSION}}
       - name: List Python installations
         shell: pwsh
         run: |
           Set-Location -Path "C:\hostedtoolcache\windows\Python"
           Get-ChildItem -Force
-      - name: Compress venv
-        shell: pwsh
-        run: |
-          Compress-Archive -Path C:\hostedtoolcache\windows\Python\${{needs.prepare.outputs.VERSION}}\x64\* -DestinationPath win-x64.zip
-          Compress-Archive -Path C:\hostedtoolcache\windows\Python\${{needs.prepare.outputs.VERSION}}\x86\* -DestinationPath win-x86.zip
-      - name: Release
-        uses: softprops/action-gh-release@v1
-        if: startsWith(github.ref, 'refs/tags/')
-        with:
-          files: |
-            win-x64.zip
-            win-x86.zip
+
+  # windows_build:
+  #   needs: prepare
+  #   runs-on: windows-latest
+  #   steps:
+  #     - name: Download Python installer
+  #       shell: pwsh
+  #       run: curl.exe --output installer.exe --url https://www.python.org/ftp/python/${{needs.prepare.outputs.VERSION}}/python-${{needs.prepare.outputs.VERSION}}-amd64.exe
+  #     - name: Run installation in silent mode @ -Docs -Debug -Launcher
+  #       shell: pwsh
+  #       run: Start-Process "installer.exe" -argumentlist "/quiet InstallAllUsers=1 PrependPath=0 Include_doc=0 include_launcher=0 TargetDir='C:\Temp\Python\3.7.0'" -Verb RunAs -Wait
+  #     - name: Try to find logs
+  #       shell: pwsh
+  #       run: |
+  #         Set-Location -Path "C:\Temp"
+  #         Get-ChildItem -Force
+  #     - name: Find Python installation
+  #       shell: pwsh
+  #       run: |
+  #         Get-Command python3
+  #         dir env:
+  #     - name: List Python installations
+  #       shell: pwsh
+  #       run: |
+  #         Set-Location -Path "C:\hostedtoolcache\windows\Python"
+  #         Get-ChildItem -Force
+  #     - name: Compress venv
+  #       shell: pwsh
+  #       run: |
+  #         Compress-Archive -Path C:\hostedtoolcache\windows\Python\${{needs.prepare.outputs.VERSION}}\x64\* -DestinationPath win-x64.zip
+  #         Compress-Archive -Path C:\hostedtoolcache\windows\Python\${{needs.prepare.outputs.VERSION}}\x86\* -DestinationPath win-x86.zip
+  #     - name: Release
+  #       uses: softprops/action-gh-release@v1
+  #       if: startsWith(github.ref, 'refs/tags/')
+  #       with:
+  #         files: |
+  #           win-x64.zip
+  #           win-x86.zip
