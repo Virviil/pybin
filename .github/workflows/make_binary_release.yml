@@ -18,7 +18,7 @@ jobs:
     runs-on: windows-latest
     steps:
       - name: Download python
-        uses: actions/setup-python@3
+        uses: actions/setup-python@v3
         with:
           python-version: ${{needs.prepare.outputs.VERSION}}
       - name: List Python installations
